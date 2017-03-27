@@ -2,10 +2,9 @@
 package snake.drab.display;
 
 import Snake.drab.attributes.Square;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 /**
@@ -14,9 +13,9 @@ import java.util.ArrayList;
  */
 public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
-    /**
-     * Creates new form DisplayGame
-     */
+    public ArrayList<ArrayList<Square>> listBoard = new ArrayList();
+    private int[] placementPresent = {0,0};
+     
     public DisplayGame() {
         initComponents();   
         addKeyListener (this);
@@ -27,7 +26,42 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println(e.getKeyCode());
+
+        SquareGraphics  squareGraphics = new SquareGraphics();
+        if(e.getKeyCode() == 37){
+                        
+            listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+            this.placementPresent[1]--;
+            listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SnackHead");
+            squareGraphics.updateGraphics(listBoard);
+            repaint();
+        }
+        else if(e.getKeyCode() == 39){
+            
+            listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+            this.placementPresent[1]++;
+            listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SnackHead");
+            squareGraphics.updateGraphics(listBoard);
+            repaint();
+        }
+        
+        else if(e.getKeyCode() == 38){
+            
+            listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+            this.placementPresent[0]--;
+            listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SnackHead");
+            squareGraphics.updateGraphics(listBoard);
+            repaint();
+        }
+        
+        else if(e.getKeyCode() == 40){
+            
+            listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+            this.placementPresent[0]++;
+            listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SnackHead");
+            squareGraphics.updateGraphics(listBoard);
+            repaint();
+        }
     }
 
     @Override
@@ -35,18 +69,22 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     
     public void run(){
         //making of the board
-        int size= 4;        
-        ArrayList<ArrayList<Square>> listBoard = new ArrayList();         
-
+         
+        //initialisation of board
+        int size= 4;       
         for(int j = 0 ; j < size ; j ++  ){
             ArrayList<Square> rowSquare = new ArrayList();
             for(int i = 0 ; i < size ; i ++ ){
                 rowSquare.add(new Square("default"));
             }            
             listBoard.add(rowSquare);
-        }      
+        } 
+        //make origin
+        this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SnackHead");
         this.setContentPane(new SquareGraphics(listBoard));
     }
+    
+    
     
     
     

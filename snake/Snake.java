@@ -7,7 +7,7 @@ import snake.drab.display.DisplayGame;
  *
  * @author jerome.lombard
  */
-public class SnakeGraphics {
+public class Snake {
 
     /**
      * @param args the command line arguments
