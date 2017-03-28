@@ -14,11 +14,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
     public ArrayList<ArrayList<Square>> listBoard = new ArrayList();
-    private final int[] placementPresent = {0,0}; // {y,x} 
-    private final int sizeSquare = 25;
+    private final int[] placementPresent = {1,1}; // {y,x} 
+    private final int sizeSquare = 5;
     private final SquareGraphics  squareGraphics = new SquareGraphics(listBoard, this.sizeSquare);
     private String direction = "RIGHT";
-    private boolean gameContinue = true;
+    private final boolean gameContinue = true;
      
     public DisplayGame() {
         initComponents();   
@@ -74,38 +74,36 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
         //making of the board
         addKeyListener (this);
         
-//        ArrayList<Square> rowSquareWallFullTop = new ArrayList();
-//        for(int i = 0 ; i < this.sizeSquare ; i ++ ){
-//            rowSquareWallFullTop.add(new Square("WALL"));
-//        }
-//        
-//        ArrayList<Square> rowSquareWallFullBottom = new ArrayList();
-//        for(int i = 0 ; i < this.sizeSquare ; i ++ ){
-//            rowSquareWallFullBottom.add(new Square("WALL"));
-//        }
-//
-//        this.listBoard.add(rowSquareWallFullTop);
-//        for(int j = 0 ; j < (this.sizeSquare - 2) ; j ++  ){
-//            ArrayList<Square> rowSquareWallStd = new ArrayList();
-//            rowSquareWallStd.add(new Square("Wall"));
-//            for(int i = 0 ; i < (this.sizeSquare-2) ; i ++ ){
-//                rowSquareWallStd.add(new Square("default"));
-//            }
-//            rowSquareWallStd.add(new Square("Wall"));
-//            this.listBoard.add(rowSquareWallStd);
-//        }
-//        this.listBoard.add(rowSquareWallFullBottom);
+        ArrayList<Square> rowSquareWallFullTop = new ArrayList();
+        for(int i = 0 ; i < this.sizeSquare ; i ++ ){
+            rowSquareWallFullTop.add(new Square("WALL"));
+        }
         
-        
+        ArrayList<Square> rowSquareWallFullBottom = new ArrayList();
+        for(int i = 0 ; i < this.sizeSquare ; i ++ ){
+            rowSquareWallFullBottom.add(new Square("WALL"));
+        }
+
+        this.listBoard.add(rowSquareWallFullTop);
+        for(int j = 0 ; j < (this.sizeSquare - 2) ; j ++  ){
+            ArrayList<Square> rowSquareWallStd = new ArrayList();
+            rowSquareWallStd.add(new Square("WALL"));
+            for(int i = 0 ; i < (this.sizeSquare-2) ; i ++ ){
+                rowSquareWallStd.add(new Square("default"));
+            }
+            rowSquareWallStd.add(new Square("WALL"));
+            this.listBoard.add(rowSquareWallStd);
+        }
+        this.listBoard.add(rowSquareWallFullBottom);       
         
         //initialisation of the board
-        for(int j = 0 ; j < this.sizeSquare ; j ++  ){
-            ArrayList<Square> rowSquares = new ArrayList();
-            for(int i = 0 ; i < this.sizeSquare ; i ++ ){
-                rowSquares.add(new Square("default"));
-            }            
-            listBoard.add(rowSquares);
-        } 
+//        for(int j = 0 ; j < this.sizeSquare ; j ++  ){
+//            ArrayList<Square> rowSquares = new ArrayList();
+//            for(int i = 0 ; i < this.sizeSquare ; i ++ ){
+//                rowSquares.add(new Square("default"));
+//            }            
+//            listBoard.add(rowSquares);
+//        } 
 
         //make origin
         this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNACKHEAD");
@@ -116,12 +114,11 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public void runSnack() {
         
             switch (this.direction) {
+                
             case "LEFT" :
                 //test if the snack is out of the board (left side)
-                if(this.placementPresent[1] == 0){
-                    System.out.println("out");
-                    //this.gameContinue = false;
-                    break;
+                if(this.getIfWall("LEFT")){
+                   break;
                 }
                 this.getIfApple("LEFT");
                 this.direction = "LEFT";
@@ -129,36 +126,30 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                 break;
             case "RIGHT":
                 //test if the snack is out of the board right side)
-                if(this.placementPresent[1] == listBoard.get(0).size() - 1 ){ 
-                    System.out.println("out -- R");
-                    //this.gameContinue = false;
-                    break;
+                if(this.getIfWall("RIGHT")){
+                   break;
                 }
                 this.getIfApple("RIGHT");
-                direction = "RIGHT";
+                this.direction = "RIGHT";
                 this.goTo(this.direction);
                 break;
             case "TOP":
                 //test if the snack is out of the board (top side)
-                if(this.placementPresent[0] == 0){
-                    System.out.println("out"); 
-                    //this.gameContinue = false;
-                    break;
+                if(this.getIfWall("TOP")){
+                   break;
                 }
                 this.getIfApple("TOP");
-                direction = "TOP";
+                this.direction = "TOP";
                 this.goTo(this.direction);
                 
                 break;
             case "BOTTOM":
                 //test if the snack is out of the board (bottom side)
-                if(this.placementPresent[0] == listBoard.get(0).size() - 1){
-                    System.out.println("out");
-                    //this.gameContinue = false;
-                    break;
-                } 
+                if(this.getIfWall("BOTTOM")){
+                   break;
+                }
                 this.getIfApple("BOTTOM");
-                direction = "BOTTOM";
+                this.direction = "BOTTOM";
                 this.goTo(this.direction);
                 break;
             default:
@@ -191,11 +182,45 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
         }
     }
     
+    public boolean getIfWall(String deplacement){
+        switch(deplacement){
+            case "LEFT":
+                if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] - 1).getType().equals("WALL")){
+                    System.out.println("out -- L");
+                    return true;
+                } 
+                break;
+            case "RIGHT":
+                if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] + 1).getType().equals("WALL")){
+                    System.out.println("out -- R");
+                    return true;
+                } 
+                break;
+            case "BOTTOM":
+                if(this.listBoard.get(this.placementPresent[0] + 1).get(this.placementPresent[1]).getType().equals("WALL")){
+                    System.out.println("out -- B");
+                    return true;
+                } 
+                break;
+            case "TOP":
+                if(this.listBoard.get(this.placementPresent[0] - 1).get(this.placementPresent[1]).getType().equals("WALL")){
+                    System.out.println("out -- T");
+                    return true;
+                } 
+                break;
+        }
+        return false;
+    }
+    
+    
     public void setApple(){
         //set a new position to the apple     
-        int[] placementApple = {0,0};
-        placementApple[0] = ThreadLocalRandom.current().nextInt(0, (this.sizeSquare)) ;
-        placementApple[1] = ThreadLocalRandom.current().nextInt(0, (this.sizeSquare)) ;
+        int[] placementApple = {1,1};
+        while(placementApple[0] == this.placementPresent[0] && placementApple[1] == this.placementPresent[1] ){
+            placementApple[0] = ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1) ;
+            placementApple[1] = ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1) ;
+        }
+
         
         System.out.println("apple : " + placementApple[0] + " - " +  placementApple[1]);
         listBoard.get(placementApple[0]).get(placementApple[1]).setType("APPLE");
@@ -246,7 +271,6 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
