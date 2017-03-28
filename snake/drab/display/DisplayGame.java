@@ -15,21 +15,25 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
     public ArrayList<ArrayList<Square>> listBoard = new ArrayList();
     private final int[] placementPresent = {0,0}; // {y,x} 
-    private final int[] placementApple = {0,0};
     private final int sizeSquare = 25;
     private final SquareGraphics  squareGraphics = new SquareGraphics(listBoard, this.sizeSquare);
     private String direction = "RIGHT";
+    private boolean gameContinue = true;
      
     public DisplayGame() {
         initComponents();   
     }
-    
+        
     /**
      *
      * @return
      */
     public int getSizeSquare(){
         return this.sizeSquare;
+    }
+    
+    public boolean getGameContinue(){
+        return this.gameContinue;
     }
     
     @Override
@@ -39,29 +43,27 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public void keyPressed(KeyEvent e) {
         //System.out.println(this.placementPresent[1] + " - "  + this.placementPresent[0]);
         //System.out.println("--> apple : " + this.placementApple[1] + " - "  + this.placementApple[0]);
-        switch (e.getKeyCode()) {
-            case 37 :
-                //test if the snack is out of the board (left side)
-                this.direction = "LEFT";
-                this.runSnack();
-                break;
-            case 39:
-                //test if the snack is out of the board right side)
-                this.direction = "RIGHT";
-                this.runSnack();
-                break;
-            case 38:
-                //test if the snack is out of the board (top side)
-                this.direction = "TOP";
-                this.runSnack();
-                break;
-            case 40:
-                //test if the snack is out of the board (bottom side)
-                this.direction = "BOTTOM";
-                this.runSnack();
-                break;
-            default:
-                break;
+        if(this.gameContinue){
+            switch (e.getKeyCode()) {
+                case 37 :
+                    //test if the snack is out of the board (left side)
+                    this.direction = "LEFT";
+                    break;
+                case 39:
+                    //test if the snack is out of the board right side)
+                    this.direction = "RIGHT";
+                    break;
+                case 38:
+                    //test if the snack is out of the board (top side)
+                    this.direction = "TOP";
+                    break;
+                case 40:
+                    //test if the snack is out of the board (bottom side)
+                    this.direction = "BOTTOM";
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -71,15 +73,40 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public void init(){
         //making of the board
         addKeyListener (this);
-
+        
+//        ArrayList<Square> rowSquareWallFullTop = new ArrayList();
+//        for(int i = 0 ; i < this.sizeSquare ; i ++ ){
+//            rowSquareWallFullTop.add(new Square("WALL"));
+//        }
+//        
+//        ArrayList<Square> rowSquareWallFullBottom = new ArrayList();
+//        for(int i = 0 ; i < this.sizeSquare ; i ++ ){
+//            rowSquareWallFullBottom.add(new Square("WALL"));
+//        }
+//
+//        this.listBoard.add(rowSquareWallFullTop);
+//        for(int j = 0 ; j < (this.sizeSquare - 2) ; j ++  ){
+//            ArrayList<Square> rowSquareWallStd = new ArrayList();
+//            rowSquareWallStd.add(new Square("Wall"));
+//            for(int i = 0 ; i < (this.sizeSquare-2) ; i ++ ){
+//                rowSquareWallStd.add(new Square("default"));
+//            }
+//            rowSquareWallStd.add(new Square("Wall"));
+//            this.listBoard.add(rowSquareWallStd);
+//        }
+//        this.listBoard.add(rowSquareWallFullBottom);
+        
+        
+        
         //initialisation of the board
         for(int j = 0 ; j < this.sizeSquare ; j ++  ){
-            ArrayList<Square> rowSquare = new ArrayList();
+            ArrayList<Square> rowSquares = new ArrayList();
             for(int i = 0 ; i < this.sizeSquare ; i ++ ){
-                rowSquare.add(new Square("default"));
+                rowSquares.add(new Square("default"));
             }            
-            listBoard.add(rowSquare);
+            listBoard.add(rowSquares);
         } 
+
         //make origin
         this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNACKHEAD");
         this.setApple();
@@ -87,14 +114,13 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     }
     
     public void runSnack() {
-        boolean game = true;
         
             switch (this.direction) {
             case "LEFT" :
                 //test if the snack is out of the board (left side)
                 if(this.placementPresent[1] == 0){
                     System.out.println("out");
-                    game = false;
+                    //this.gameContinue = false;
                     break;
                 }
                 this.getIfApple("LEFT");
@@ -105,7 +131,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                 //test if the snack is out of the board right side)
                 if(this.placementPresent[1] == listBoard.get(0).size() - 1 ){ 
                     System.out.println("out -- R");
-                    game = false;
+                    //this.gameContinue = false;
                     break;
                 }
                 this.getIfApple("RIGHT");
@@ -115,8 +141,8 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
             case "TOP":
                 //test if the snack is out of the board (top side)
                 if(this.placementPresent[0] == 0){
-                    System.out.println("out");
-                    game = false;                    
+                    System.out.println("out"); 
+                    //this.gameContinue = false;
                     break;
                 }
                 this.getIfApple("TOP");
@@ -128,7 +154,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                 //test if the snack is out of the board (bottom side)
                 if(this.placementPresent[0] == listBoard.get(0).size() - 1){
                     System.out.println("out");
-                    game = false;
+                    //this.gameContinue = false;
                     break;
                 } 
                 this.getIfApple("BOTTOM");
@@ -143,22 +169,22 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public void getIfApple(String deplacement){
         switch(deplacement){
             case "LEFT":
-                if(this.placementPresent[0] == this.placementApple[0] && (this.placementPresent[1] - 1) == this.placementApple[1]){
+                if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] - 1).getType().equals("APPLE")){
                     this.setApple();
                 } 
                 break;
             case "RIGHT":
-                if(this.placementPresent[0] == this.placementApple[0] && (this.placementPresent[1] + 1) == this.placementApple[1]){
+                if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] + 1).getType().equals("APPLE")){
                     this.setApple();
                 } 
                 break;
             case "BOTTOM":
-                if((this.placementPresent[0] + 1) == this.placementApple[0] && (this.placementPresent[1]) == this.placementApple[1]){
+                if(this.listBoard.get(this.placementPresent[0] + 1).get(this.placementPresent[1]).getType().equals("APPLE")){
                     this.setApple();
                 } 
                 break;
             case "TOP":
-                if((this.placementPresent[0] - 1)  == this.placementApple[0] && (this.placementPresent[1]) == this.placementApple[1]){
+                if(this.listBoard.get(this.placementPresent[0] - 1).get(this.placementPresent[1]).getType().equals("APPLE")){
                     this.setApple();
                 } 
                 break;
@@ -166,12 +192,13 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     }
     
     public void setApple(){
-        //        
-        this.placementApple[0] = ThreadLocalRandom.current().nextInt(0, (this.sizeSquare)) ;
-        this.placementApple[1] = ThreadLocalRandom.current().nextInt(0, (this.sizeSquare)) ;
+        //set a new position to the apple     
+        int[] placementApple = {0,0};
+        placementApple[0] = ThreadLocalRandom.current().nextInt(0, (this.sizeSquare)) ;
+        placementApple[1] = ThreadLocalRandom.current().nextInt(0, (this.sizeSquare)) ;
         
-        System.out.println("apple : " + this.placementApple[0] + " - " +  this.placementApple[1]);
-        listBoard.get(this.placementApple[0]).get(this.placementApple[1]).setType("APPLE");
+        System.out.println("apple : " + placementApple[0] + " - " +  placementApple[1]);
+        listBoard.get(placementApple[0]).get(placementApple[1]).setType("APPLE");
         squareGraphics.updateGraphics(listBoard);
         repaint();       
     }
