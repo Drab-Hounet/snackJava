@@ -8,20 +8,18 @@ import javax.swing.JPanel;
 
 public class SquareGraphics extends JPanel{
 
-    public ArrayList<ArrayList<Square>> listBoard;
+    private ArrayList<ArrayList<Square>> listBoard;
+    private int sizeSquare;
     
-    public SquareGraphics(ArrayList<ArrayList<Square>> listBoard){
+    public SquareGraphics(ArrayList<ArrayList<Square>> listBoard, int sizeSquare){
         this.listBoard = listBoard;  
+        this.sizeSquare = sizeSquare;
     }
-    
-    public SquareGraphics(){
-        
-    }
-    
+
     @Override
     public void paintComponent(Graphics g){
         
-        int width = 100;
+        int width = 800 / this.sizeSquare;
         for (int i = 0 ; i < this.listBoard.size() ; i ++){
             for(int j = 0 ; j < this.listBoard.get(i).size() ; j ++){
                 g.setColor(this.listBoard.get(i).get(j).getColor());

@@ -31,11 +31,14 @@ public final class Square {
 
     public void setColor(String type) {
         switch(type){
-            case "SnackHead":
+            case "SNACKHEAD":
                 this.color = new Color(30, 144, 255);
                 break;
             case "default":
                 this.color = new Color(192, 192, 192);
+                break;
+            case "APPLE":
+                this.color = new Color(173, 79, 9);
                 break;
             default:
                 this.color = new Color(192, 192, 192);
