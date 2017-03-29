@@ -16,7 +16,7 @@ public final class Execute {
             @Override
             public void run() {
                 while(game.getGameContinue()){
-                    game.runSnack();
+                    game.runSnake();
                     try{
                         Thread.sleep(200);
                     }catch(InterruptedException e){

@@ -15,7 +15,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
     public ArrayList<ArrayList<Square>> listBoard = new ArrayList();
     private final int[] placementPresent = {1,1}; // {y,x} 
-    private final int sizeSquare = 5;
+    private final int sizeSquare = 40;
     private final SquareGraphics  squareGraphics = new SquareGraphics(listBoard, this.sizeSquare);
     private String direction = "RIGHT";
     private final boolean gameContinue = true;
@@ -111,7 +111,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
         this.setContentPane(squareGraphics);
     }
     
-    public void runSnack() {
+    public void runSnake() {
         
             switch (this.direction) {
                 
@@ -121,7 +121,6 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                    break;
                 }
                 this.getIfApple("LEFT");
-                this.direction = "LEFT";
                 this.goTo(this.direction);
                 break;
             case "RIGHT":
@@ -130,7 +129,6 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                    break;
                 }
                 this.getIfApple("RIGHT");
-                this.direction = "RIGHT";
                 this.goTo(this.direction);
                 break;
             case "TOP":
@@ -139,9 +137,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                    break;
                 }
                 this.getIfApple("TOP");
-                this.direction = "TOP";
                 this.goTo(this.direction);
-                
                 break;
             case "BOTTOM":
                 //test if the snack is out of the board (bottom side)
@@ -149,7 +145,6 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                    break;
                 }
                 this.getIfApple("BOTTOM");
-                this.direction = "BOTTOM";
                 this.goTo(this.direction);
                 break;
             default:
@@ -216,7 +211,8 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public void setApple(){
         //set a new position to the apple     
         int[] placementApple = {1,1};
-        while(placementApple[0] == this.placementPresent[0] && placementApple[1] == this.placementPresent[1] ){
+        while(!this.listBoard.get(placementApple[0]).get(placementApple[1]).getType().equals("default")){
+            System.out.println(this.listBoard.get(placementApple[0]).get(placementApple[1]).getType());
             placementApple[0] = ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1) ;
             placementApple[1] = ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1) ;
         }
