@@ -31,10 +31,10 @@ public final class Square {
 
     public void setColor(String type) {
         switch(type){
-            case "SNACKHEAD":
+            case "SNAKEHEAD":
                 this.color = new Color(0, 142, 142);
                 break;
-            case "SNACKBODY":
+            case "SNAKEBODY":
                 this.color = new Color(22, 184, 78);
                 break;
             case "WALL":

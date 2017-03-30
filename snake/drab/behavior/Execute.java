@@ -18,7 +18,7 @@ public final class Execute {
                 while(game.getGameContinue()){
                     game.runSnake();
                     try{
-                        Thread.sleep(200);
+                        Thread.sleep(300);
                     }catch(InterruptedException e){
                         Thread.currentThread().interrupt();
                     }

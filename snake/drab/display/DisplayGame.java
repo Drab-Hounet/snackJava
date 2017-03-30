@@ -15,7 +15,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
     public ArrayList<ArrayList<Square>> listBoard = new ArrayList();
     private final int[] placementPresent = {1,1}; // {y,x} 
-    private final int sizeSquare = 40;
+    private final int sizeSquare = 4;
     private final SquareGraphics  squareGraphics = new SquareGraphics(listBoard, this.sizeSquare);
     private String direction = "RIGHT";
     private final boolean gameContinue = true;
@@ -47,19 +47,27 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
             switch (e.getKeyCode()) {
                 case 37 :
                     //test if the snack is out of the board (left side)
-                    this.direction = "LEFT";
+                    if(!this.direction.equals("RIGHT")){
+                       this.direction = "LEFT";
+                    }
                     break;
                 case 39:
                     //test if the snack is out of the board right side)
-                    this.direction = "RIGHT";
+                    if(!this.direction.equals("LEFT")){
+                        this.direction = "RIGHT";
+                    }
                     break;
                 case 38:
                     //test if the snack is out of the board (top side)
-                    this.direction = "TOP";
+                    if(!this.direction.equals("BOTTOM")){
+                        this.direction = "TOP";
+                    }
                     break;
                 case 40:
                     //test if the snack is out of the board (bottom side)
-                    this.direction = "BOTTOM";
+                    if(!this.direction.equals("TOP")){
+                        this.direction = "BOTTOM";                    
+                    }
                     break;
                 default:
                     break;
@@ -106,7 +114,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 //        } 
 
         //make origin
-        this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNACKHEAD");
+        this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
         this.setApple();
         this.setContentPane(squareGraphics);
     }
@@ -117,68 +125,73 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                 
             case "LEFT" :
                 //test if the snack is out of the board (left side)
-                if(this.getIfWall("LEFT")){
+                if(this.getIfWall()){
                    break;
                 }
-                this.getIfApple("LEFT");
-                this.goTo(this.direction);
+                
+                this.goTo(this.getIfApple());
                 break;
             case "RIGHT":
                 //test if the snack is out of the board right side)
-                if(this.getIfWall("RIGHT")){
+                if(this.getIfWall()){
                    break;
                 }
-                this.getIfApple("RIGHT");
-                this.goTo(this.direction);
+                
+                this.goTo(this.getIfApple());
                 break;
             case "TOP":
                 //test if the snack is out of the board (top side)
-                if(this.getIfWall("TOP")){
+                if(this.getIfWall()){
                    break;
                 }
-                this.getIfApple("TOP");
-                this.goTo(this.direction);
+                
+                this.goTo(this.getIfApple());
                 break;
             case "BOTTOM":
                 //test if the snack is out of the board (bottom side)
-                if(this.getIfWall("BOTTOM")){
+                if(this.getIfWall()){
                    break;
                 }
-                this.getIfApple("BOTTOM");
-                this.goTo(this.direction);
+                
+                this.goTo(this.getIfApple());
                 break;
             default:
                 break;
             } 
     }
 
-    public void getIfApple(String deplacement){
-        switch(deplacement){
+    public boolean getIfApple(){
+        switch(this.direction){
             case "LEFT":
                 if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] - 1).getType().equals("APPLE")){
                     this.setApple();
+                    return true;
                 } 
                 break;
             case "RIGHT":
                 if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] + 1).getType().equals("APPLE")){
                     this.setApple();
+                    return true;
                 } 
                 break;
             case "BOTTOM":
                 if(this.listBoard.get(this.placementPresent[0] + 1).get(this.placementPresent[1]).getType().equals("APPLE")){
                     this.setApple();
+                    return true;
                 } 
                 break;
             case "TOP":
                 if(this.listBoard.get(this.placementPresent[0] - 1).get(this.placementPresent[1]).getType().equals("APPLE")){
                     this.setApple();
+                    return true;                    
                 } 
                 break;
         }
+        return false;
     }
     
-    public boolean getIfWall(String deplacement){
-        switch(deplacement){
+    public boolean getIfWall(){
+        switch(this.direction){
             case "LEFT":
                 if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] - 1).getType().equals("WALL")){
                     System.out.println("out -- L");
@@ -211,51 +224,69 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public void setApple(){
         //set a new position to the apple     
         int[] placementApple = {1,1};
-        while(!this.listBoard.get(placementApple[0]).get(placementApple[1]).getType().equals("default")){
+        do {
             System.out.println(this.listBoard.get(placementApple[0]).get(placementApple[1]).getType());
             placementApple[0] = ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1) ;
             placementApple[1] = ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1) ;
-        }
+        }while(!this.listBoard.get(placementApple[0]).get(placementApple[1]).getType().equals("default"));
 
         
-        System.out.println("apple : " + placementApple[0] + " - " +  placementApple[1]);
+        System.out.println("apple : " + placementApple[0] + " */* " +  placementApple[1]);
         listBoard.get(placementApple[0]).get(placementApple[1]).setType("APPLE");
         squareGraphics.updateGraphics(listBoard);
         repaint();       
     }
     
-    public void goTo(String direction){
+    public void goTo(boolean apple){
 
-        switch(direction){
+        switch(this.direction){
             case "LEFT":
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                if(apple){
+                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEBODY");
+                }else{
+                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                }
+                
                 this.placementPresent[1]--;
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNACKHEAD");
+                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
                 squareGraphics.updateGraphics(listBoard);
                 repaint();
                 break;
             case "RIGHT":
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                if(apple){
+                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEBODY");
+                }else{
+                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                }
                 this.placementPresent[1]++;
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNACKHEAD");
+                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
                 squareGraphics.updateGraphics(listBoard);
                 repaint();  
                 break;
             case "TOP":
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                if(apple){
+                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEBODY");
+                }else{
+                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                }
                 this.placementPresent[0]--;
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNACKHEAD");
+                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
                 squareGraphics.updateGraphics(listBoard);
                 repaint();      
                 break;
             case "BOTTOM":
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                if(apple){
+                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEBODY");
+                }else{
+                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                }
                 this.placementPresent[0]++;
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNACKHEAD");
+                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
                 squareGraphics.updateGraphics(listBoard);
                 repaint();  
         }
     }
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
