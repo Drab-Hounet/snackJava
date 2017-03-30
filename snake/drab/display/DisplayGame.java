@@ -15,7 +15,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
     public ArrayList<ArrayList<Square>> listBoard = new ArrayList();
     private final int[] placementPresent = {1,1}; // {y,x} 
-    private final int sizeSquare = 4;
+    private final int sizeSquare = 20;
     private final SquareGraphics  squareGraphics = new SquareGraphics(listBoard, this.sizeSquare);
     private String direction = "RIGHT";
     private final boolean gameContinue = true;
@@ -121,102 +121,63 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     
     public void runSnake() {
         
-            switch (this.direction) {
-                
-            case "LEFT" :
-                //test if the snack is out of the board (left side)
-                if(this.getIfWall()){
-                   break;
-                }
-                
-                this.goTo(this.getIfApple());
-                break;
-            case "RIGHT":
-                //test if the snack is out of the board right side)
-                if(this.getIfWall()){
-                   break;
-                }
-                
-                this.goTo(this.getIfApple());
-                break;
-            case "TOP":
-                //test if the snack is out of the board (top side)
-                if(this.getIfWall()){
-                   break;
-                }
-                
-                this.goTo(this.getIfApple());
-                break;
-            case "BOTTOM":
-                //test if the snack is out of the board (bottom side)
-                if(this.getIfWall()){
-                   break;
-                }
-                
-                this.goTo(this.getIfApple());
-                break;
-            default:
-                break;
-            } 
+        String squareAfterMove;
+        switch (this.direction) {
+
+        case "LEFT" :
+            //test if the snack is out of the board (left side)
+            squareAfterMove = this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] - 1).getType();
+            if(this.getIfWall(squareAfterMove)){
+               break;
+            }
+            this.goTo(this.getIfApple(squareAfterMove));
+            break;
+            
+        case "RIGHT":
+            //test if the snack is out of the board right side)          
+            squareAfterMove = this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] + 1).getType();
+            if(this.getIfWall(squareAfterMove)){
+               break;
+            }
+            this.goTo(this.getIfApple(squareAfterMove));
+            break;
+        
+        case "TOP":
+            //test if the snack is out of the board (top side)
+            squareAfterMove = this.listBoard.get(this.placementPresent[0] - 1).get(this.placementPresent[1]).getType();
+            if(this.getIfWall(squareAfterMove)){
+               break;
+            }
+            this.goTo(this.getIfApple(squareAfterMove));
+            break;
+            
+        case "BOTTOM":
+            //test if the snack is out of the board (bottom side)
+            squareAfterMove = this.listBoard.get(this.placementPresent[0] + 1).get(this.placementPresent[1]).getType(); 
+            if(this.getIfWall(squareAfterMove)){
+               break;
+            }
+            this.goTo(this.getIfApple(squareAfterMove));
+            break;
+            
+        default:
+            break;
+        } 
     }
 
-    public boolean getIfApple(){
-        switch(this.direction){
-            case "LEFT":
-                if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] - 1).getType().equals("APPLE")){
-                    this.setApple();
-                    return true;
-                } 
-                break;
-            case "RIGHT":
-                if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] + 1).getType().equals("APPLE")){
-                    this.setApple();
-                    return true;
-                } 
-                break;
-            case "BOTTOM":
-                if(this.listBoard.get(this.placementPresent[0] + 1).get(this.placementPresent[1]).getType().equals("APPLE")){
-                    this.setApple();
-                    return true;
-                } 
-                break;
-            case "TOP":
-                if(this.listBoard.get(this.placementPresent[0] - 1).get(this.placementPresent[1]).getType().equals("APPLE")){
-                    this.setApple();
-                    return true;                    
-                } 
-                break;
-        }
+    public boolean getIfApple(String squareAfterMove){
+        if(squareAfterMove.equals("APPLE")){
+            this.setApple();
+            return true;
+        } 
         return false;
     }
     
-    public boolean getIfWall(){
-        switch(this.direction){
-            case "LEFT":
-                if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] - 1).getType().equals("WALL")){
-                    System.out.println("out -- L");
-                    return true;
-                } 
-                break;
-            case "RIGHT":
-                if(this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] + 1).getType().equals("WALL")){
-                    System.out.println("out -- R");
-                    return true;
-                } 
-                break;
-            case "BOTTOM":
-                if(this.listBoard.get(this.placementPresent[0] + 1).get(this.placementPresent[1]).getType().equals("WALL")){
-                    System.out.println("out -- B");
-                    return true;
-                } 
-                break;
-            case "TOP":
-                if(this.listBoard.get(this.placementPresent[0] - 1).get(this.placementPresent[1]).getType().equals("WALL")){
-                    System.out.println("out -- T");
-                    return true;
-                } 
-                break;
-        }
+    public boolean getIfWall(String squareAfter){
+        if(squareAfter.equals("WALL")){
+            System.out.println("out -- L");
+            return true;
+        } 
         return false;
     }
     
