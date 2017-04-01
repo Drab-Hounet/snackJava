@@ -13,12 +13,22 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
-    public ArrayList<ArrayList<Square>> listBoard = new ArrayList();
-    private final int[] placementPresent = {1,1}; // {y,x} 
+    public ArrayList<ArrayList<Square>> board = new ArrayList();
+    
+    private ArrayList<Square> snakeBody = new ArrayList();
+    
+    private ArrayList<String> listMoveForBody = new ArrayList();
+    
+    private Square snakeHead = new Square("SNAKEHEAD", 2, 2);
+    
+    private final int[] placementPresentOfHead = {1,1}; // {y,x} 
     private final int sizeSquare = 20;
-    private final SquareGraphics  squareGraphics = new SquareGraphics(listBoard, this.sizeSquare);
+    private final SquareGraphics  squareGraphics = new SquareGraphics(board, this.sizeSquare);
     private String direction = "RIGHT";
     private final boolean gameContinue = true;
+    
+    private int NumberOfBody = 0;
+    
      
     public DisplayGame() {
         initComponents();   
@@ -41,8 +51,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        //System.out.println(this.placementPresent[1] + " - "  + this.placementPresent[0]);
-        //System.out.println("--> apple : " + this.placementApple[1] + " - "  + this.placementApple[0]);
+
         if(this.gameContinue){
             switch (e.getKeyCode()) {
                 case 37 :
@@ -92,7 +101,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
             rowSquareWallFullBottom.add(new Square("WALL"));
         }
 
-        this.listBoard.add(rowSquareWallFullTop);
+        this.board.add(rowSquareWallFullTop);
         for(int j = 0 ; j < (this.sizeSquare - 2) ; j ++  ){
             ArrayList<Square> rowSquareWallStd = new ArrayList();
             rowSquareWallStd.add(new Square("WALL"));
@@ -100,64 +109,74 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
                 rowSquareWallStd.add(new Square("default"));
             }
             rowSquareWallStd.add(new Square("WALL"));
-            this.listBoard.add(rowSquareWallStd);
+            this.board.add(rowSquareWallStd);
         }
-        this.listBoard.add(rowSquareWallFullBottom);       
-        
-        //initialisation of the board
-//        for(int j = 0 ; j < this.sizeSquare ; j ++  ){
-//            ArrayList<Square> rowSquares = new ArrayList();
-//            for(int i = 0 ; i < this.sizeSquare ; i ++ ){
-//                rowSquares.add(new Square("default"));
-//            }            
-//            listBoard.add(rowSquares);
-//        } 
+        this.board.add(rowSquareWallFullBottom);       
 
         //make origin
-        this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
+        this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
+
         this.setApple();
         this.setContentPane(squareGraphics);
     }
     
     public void runSnake() {
         
+        System.out.println("number of body : " + this.NumberOfBody);
+        
+        this.listMoveForBody.add(this.direction);
+        if(this.listMoveForBody.size() != this.NumberOfBody){
+            this.listMoveForBody.remove(0);
+        }
+        
+        //test
+
+        for (String move : this.listMoveForBody){
+            System.out.print(move);
+        }
+        System.out.println();
+        
         String squareAfterMove;
         switch (this.direction) {
 
         case "LEFT" :
             //test if the snack is out of the board (left side)
-            squareAfterMove = this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] - 1).getType();
+            squareAfterMove = this.board.get(this.snakeHead.getCoordY()).get(this.snakeHead.getCoordX() - 1).getType();
+            //squareAfterMove = this.board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1] - 1).getType();
             if(this.getIfWall(squareAfterMove)){
                break;
             }
-            this.goTo(this.getIfApple(squareAfterMove));
+            this.moveHead(this.getIfApple(squareAfterMove));
             break;
             
         case "RIGHT":
-            //test if the snack is out of the board right side)          
-            squareAfterMove = this.listBoard.get(this.placementPresent[0]).get(this.placementPresent[1] + 1).getType();
+            //test if the snack is out of the board right side)      
+            squareAfterMove = this.board.get(this.snakeHead.getCoordY()).get(this.snakeHead.getCoordX() + 1).getType();
+            //squareAfterMove = this.board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1] + 1).getType();
             if(this.getIfWall(squareAfterMove)){
                break;
             }
-            this.goTo(this.getIfApple(squareAfterMove));
+            this.moveHead(this.getIfApple(squareAfterMove));
             break;
         
         case "TOP":
             //test if the snack is out of the board (top side)
-            squareAfterMove = this.listBoard.get(this.placementPresent[0] - 1).get(this.placementPresent[1]).getType();
+            squareAfterMove = this.board.get(this.snakeHead.getCoordY() - 1).get(this.snakeHead.getCoordX()).getType();
+            //squareAfterMove = this.board.get(this.placementPresentOfHead[0] - 1).get(this.placementPresentOfHead[1]).getType();
             if(this.getIfWall(squareAfterMove)){
                break;
             }
-            this.goTo(this.getIfApple(squareAfterMove));
+            this.moveHead(this.getIfApple(squareAfterMove));
             break;
             
         case "BOTTOM":
             //test if the snack is out of the board (bottom side)
-            squareAfterMove = this.listBoard.get(this.placementPresent[0] + 1).get(this.placementPresent[1]).getType(); 
+            squareAfterMove = this.board.get(this.snakeHead.getCoordY() + 1).get(this.snakeHead.getCoordX()).getType();
+            //squareAfterMove = this.board.get(this.placementPresentOfHead[0] + 1).get(this.placementPresentOfHead[1]).getType(); 
             if(this.getIfWall(squareAfterMove)){
                break;
             }
-            this.goTo(this.getIfApple(squareAfterMove));
+            this.moveHead(this.getIfApple(squareAfterMove));
             break;
             
         default:
@@ -168,6 +187,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public boolean getIfApple(String squareAfterMove){
         if(squareAfterMove.equals("APPLE")){
             this.setApple();
+            this.NumberOfBody++;
             return true;
         } 
         return false;
@@ -175,77 +195,97 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     
     public boolean getIfWall(String squareAfter){
         if(squareAfter.equals("WALL")){
-            System.out.println("out -- L");
+            System.out.println("out");
             return true;
         } 
         return false;
     }
     
-    
     public void setApple(){
-        //set a new position to the apple     
-        int[] placementApple = {1,1};
-        do {
-            System.out.println(this.listBoard.get(placementApple[0]).get(placementApple[1]).getType());
-            placementApple[0] = ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1) ;
-            placementApple[1] = ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1) ;
-        }while(!this.listBoard.get(placementApple[0]).get(placementApple[1]).getType().equals("default"));
-
+        //set a new position to the apple    
         
-        System.out.println("apple : " + placementApple[0] + " */* " +  placementApple[1]);
-        listBoard.get(placementApple[0]).get(placementApple[1]).setType("APPLE");
-        squareGraphics.updateGraphics(listBoard);
+        Square apple = new Square("APPLE");
+      
+        do {
+            apple.setCoordX(ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1));
+            apple.setCoordY(ThreadLocalRandom.current().nextInt(1, (this.sizeSquare) - 1));     
+            System.out.println(this.board.get(apple.getCoordY()).get(apple.getCoordX()).getType());
+        }while(!this.board.get(apple.getCoordY()).get(apple.getCoordX()).getType().equals("default"));
+
+        System.out.println("apple : " + apple.getCoordX() + " -- " +  apple.getCoordY());
+        
+        board.get(apple.getCoordY()).set(apple.getCoordX(), apple);
+        squareGraphics.updateGraphics(board);
         repaint();       
     }
     
-    public void goTo(boolean apple){
-
+    public void moveHead(boolean apple){
+        
         switch(this.direction){
             case "LEFT":
                 if(apple){
-                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEBODY");
+                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("SNAKEBODY"));
+                    //board.get(placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEBODY");
                 }else{
-                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("default"));
+                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("default");
                 }
-                
-                this.placementPresent[1]--;
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
-                squareGraphics.updateGraphics(listBoard);
+                this.snakeHead.setCoordX(this.snakeHead.getCoordX() - 1 );
+                //this.placementPresentOfHead[1]--;
+                this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
+                //listBoard.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEHEAD");
+                squareGraphics.updateGraphics(board);
                 repaint();
                 break;
             case "RIGHT":
                 if(apple){
-                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEBODY");
+                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("SNAKEBODY"));
+                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEBODY");
                 }else{
-                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("default"));
+                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("default");
                 }
-                this.placementPresent[1]++;
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
-                squareGraphics.updateGraphics(listBoard);
+                //this.placementPresentOfHead[1]++;
+                this.snakeHead.setCoordX(this.snakeHead.getCoordX() + 1 );
+                this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
+                //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEHEAD");
+                squareGraphics.updateGraphics(board);
                 repaint();  
                 break;
             case "TOP":
                 if(apple){
-                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEBODY");
+                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("SNAKEBODY"));                   
+                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEBODY");
                 }else{
-                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("default"));                    
+                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("default");
                 }
-                this.placementPresent[0]--;
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
-                squareGraphics.updateGraphics(listBoard);
+                //this.placementPresentOfHead[0]--;
+                this.snakeHead.setCoordY(this.snakeHead.getCoordY() - 1 );
+                this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
+                //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEHEAD");
+                squareGraphics.updateGraphics(board);
                 repaint();      
                 break;
             case "BOTTOM":
                 if(apple){
-                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEBODY");
+                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("SNAKEBODY"));                   
+                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEBODY");
                 }else{
-                    listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("default");
+                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("default"));                            
+                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("default");
                 }
-                this.placementPresent[0]++;
-                listBoard.get(this.placementPresent[0]).get(this.placementPresent[1]).setType("SNAKEHEAD");
-                squareGraphics.updateGraphics(listBoard);
+                this.snakeHead.setCoordY(this.snakeHead.getCoordY() + 1 );               
+                //this.placementPresentOfHead[0]++;
+                this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
+                //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEHEAD");
+                squareGraphics.updateGraphics(board);
                 repaint();  
         }
+    }
+    
+    public void moveBody(){
+        
     }
     
     

@@ -10,12 +10,37 @@ import java.awt.Color;
 public final class Square {
     private String type;
     private Color color;
-
+    private int coordX = 0;
+    private int coordY = 0;
+    
     public Square(String type){
         this.type = type;
         this.setColor(this.type);
     }
 
+    public Square(String type, int coordX , int coordY){
+        this.type = type;
+        this.setColor(this.type);
+        this.coordX = coordX;
+        this.coordY = coordY;
+    }
+
+    public int getCoordX() {
+        return coordX;
+    }
+
+    public void setCoordX(int coordX) {
+        this.coordX = coordX;
+    }
+
+    public int getCoordY() {
+        return coordY;
+    }
+
+    public void setCoordY(int coordY) {
+        this.coordY = coordY;
+    }
+  
     public String getType() {
         return type;
     }
