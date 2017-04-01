@@ -15,19 +15,18 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
 
     public ArrayList<ArrayList<Square>> board = new ArrayList();
     
-    private ArrayList<Square> snakeBody = new ArrayList();
+    private final ArrayList<Square> snakeBody = new ArrayList();
     
-    private ArrayList<String> listMoveForBody = new ArrayList();
+    private final ArrayList<String> listMoveForBody = new ArrayList();
     
-    private Square snakeHead = new Square("SNAKEHEAD", 2, 2);
+    private final Square snakeHead = new Square("SNAKEHEAD", 2, 2);
     
-    private final int[] placementPresentOfHead = {1,1}; // {y,x} 
     private final int sizeSquare = 20;
     private final SquareGraphics  squareGraphics = new SquareGraphics(board, this.sizeSquare);
     private String direction = "RIGHT";
     private final boolean gameContinue = true;
     
-    private int NumberOfBody = 0;
+    private int numberOfBody = 0;
     
      
     public DisplayGame() {
@@ -114,7 +113,8 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
         this.board.add(rowSquareWallFullBottom);       
 
         //make origin
-        this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
+        this.board  .get(this.snakeHead.getCoordY())
+                    .set(this.snakeHead.getCoordX(), snakeHead);
 
         this.setApple();
         this.setContentPane(squareGraphics);
@@ -122,27 +122,20 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     
     public void runSnake() {
         
-        System.out.println("number of body : " + this.NumberOfBody);
+        System.out.println("number of body : " + this.numberOfBody);
         
         this.listMoveForBody.add(this.direction);
-        if(this.listMoveForBody.size() != this.NumberOfBody){
-            this.listMoveForBody.remove(0);
-        }
-        
-        //test
-
-        for (String move : this.listMoveForBody){
-            System.out.print(move);
-        }
-        System.out.println();
+        while(this.listMoveForBody.size() - 1  !=  this.numberOfBody){
+            this.listMoveForBody.remove(0); 
+        }   
         
         String squareAfterMove;
         switch (this.direction) {
 
         case "LEFT" :
             //test if the snack is out of the board (left side)
-            squareAfterMove = this.board.get(this.snakeHead.getCoordY()).get(this.snakeHead.getCoordX() - 1).getType();
-            //squareAfterMove = this.board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1] - 1).getType();
+            squareAfterMove = this.board.get(this.snakeHead.getCoordY())
+                                        .get(this.snakeHead.getCoordX() - 1).getType();
             if(this.getIfWall(squareAfterMove)){
                break;
             }
@@ -151,8 +144,8 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
             
         case "RIGHT":
             //test if the snack is out of the board right side)      
-            squareAfterMove = this.board.get(this.snakeHead.getCoordY()).get(this.snakeHead.getCoordX() + 1).getType();
-            //squareAfterMove = this.board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1] + 1).getType();
+            squareAfterMove = this.board.get(this.snakeHead.getCoordY())
+                                        .get(this.snakeHead.getCoordX() + 1).getType();
             if(this.getIfWall(squareAfterMove)){
                break;
             }
@@ -161,8 +154,8 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
         
         case "TOP":
             //test if the snack is out of the board (top side)
-            squareAfterMove = this.board.get(this.snakeHead.getCoordY() - 1).get(this.snakeHead.getCoordX()).getType();
-            //squareAfterMove = this.board.get(this.placementPresentOfHead[0] - 1).get(this.placementPresentOfHead[1]).getType();
+            squareAfterMove = this.board.get(this.snakeHead.getCoordY() - 1)
+                                        .get(this.snakeHead.getCoordX()).getType();
             if(this.getIfWall(squareAfterMove)){
                break;
             }
@@ -171,8 +164,8 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
             
         case "BOTTOM":
             //test if the snack is out of the board (bottom side)
-            squareAfterMove = this.board.get(this.snakeHead.getCoordY() + 1).get(this.snakeHead.getCoordX()).getType();
-            //squareAfterMove = this.board.get(this.placementPresentOfHead[0] + 1).get(this.placementPresentOfHead[1]).getType(); 
+            squareAfterMove = this.board.get(this.snakeHead.getCoordY() + 1)
+                                        .get(this.snakeHead.getCoordX()).getType();
             if(this.getIfWall(squareAfterMove)){
                break;
             }
@@ -187,7 +180,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public boolean getIfApple(String squareAfterMove){
         if(squareAfterMove.equals("APPLE")){
             this.setApple();
-            this.NumberOfBody++;
+            this.numberOfBody++;
             return true;
         } 
         return false;
@@ -220,75 +213,59 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     }
     
     public void moveHead(boolean apple){
-        
-        switch(this.direction){
-            case "LEFT":
-                if(apple){
-                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("SNAKEBODY"));
-                    //board.get(placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEBODY");
-                }else{
-                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("default"));
-                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("default");
-                }
-                this.snakeHead.setCoordX(this.snakeHead.getCoordX() - 1 );
-                //this.placementPresentOfHead[1]--;
-                this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
-                //listBoard.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEHEAD");
-                squareGraphics.updateGraphics(board);
-                repaint();
-                break;
-            case "RIGHT":
-                if(apple){
-                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("SNAKEBODY"));
-                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEBODY");
-                }else{
-                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("default"));
-                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("default");
-                }
-                //this.placementPresentOfHead[1]++;
-                this.snakeHead.setCoordX(this.snakeHead.getCoordX() + 1 );
-                this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
-                //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEHEAD");
-                squareGraphics.updateGraphics(board);
-                repaint();  
-                break;
-            case "TOP":
-                if(apple){
-                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("SNAKEBODY"));                   
-                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEBODY");
-                }else{
-                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("default"));                    
-                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("default");
-                }
-                //this.placementPresentOfHead[0]--;
-                this.snakeHead.setCoordY(this.snakeHead.getCoordY() - 1 );
-                this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
-                //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEHEAD");
-                squareGraphics.updateGraphics(board);
-                repaint();      
-                break;
-            case "BOTTOM":
-                if(apple){
-                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("SNAKEBODY"));                   
-                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEBODY");
-                }else{
-                    this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), new Square("default"));                            
-                    //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("default");
-                }
-                this.snakeHead.setCoordY(this.snakeHead.getCoordY() + 1 );               
-                //this.placementPresentOfHead[0]++;
-                this.board.get(this.snakeHead.getCoordY()).set(this.snakeHead.getCoordX(), snakeHead);
-                //board.get(this.placementPresentOfHead[0]).get(this.placementPresentOfHead[1]).setType("SNAKEHEAD");
-                squareGraphics.updateGraphics(board);
-                repaint();  
+        if(apple){
+            Square newBody = new Square("SNAKEBODY", this.snakeHead.getCoordX(), this.snakeHead.getCoordY());
+            this.board  .get(   this.snakeHead.getCoordY())
+                        .set(   this.snakeHead.getCoordX(), newBody);
+            this.snakeBody.add(newBody);
+        }else{
+            if (!this.snakeBody.isEmpty()){
+                this.moveBody();                
+            }else{
+                this.board  .get(this.snakeHead.getCoordY())
+                            .set(this.snakeHead.getCoordX(), new Square("default"));
+            }
         }
+        this.move(snakeHead, this.direction);
+        this.board  .get(snakeHead.getCoordY())
+                    .set(snakeHead.getCoordX(), snakeHead);
+        squareGraphics.updateGraphics(board);
+        repaint();      
     }
     
     public void moveBody(){
         
+        //iteration to change the position of body's and set it in board to default
+        for(int i = 0 ; i < this.snakeBody.size() ; i ++ ){
+            this.board  .get(this.snakeBody.get(i).getCoordY())
+                        .set(this.snakeBody.get(i).getCoordX(), new Square("default"));
+            this.move(this.snakeBody.get(i), this.listMoveForBody.get(i));
+        }
+        //iteration to set body's in board
+        for(int i = 0 ; i < this.snakeBody.size() ; i ++ ){
+            this.board  .get(this.snakeBody.get(i).getCoordY())
+                        .set(this.snakeBody.get(i).getCoordX(), snakeBody.get(i));
+        }
     }
     
-    
+    public void move(Square square, String direction){
+        
+        switch(direction){
+            case "LEFT":                
+                square.setCoordX(square.getCoordX() - 1 );
+                break;
+            case "RIGHT":                
+                square.setCoordX(square.getCoordX() + 1 );
+                break;
+            case "TOP":
+                square.setCoordY(square.getCoordY() - 1 );
+                break;
+            case "BOTTOM":
+                square.setCoordY(square.getCoordY() + 1 );               
+                break;
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
