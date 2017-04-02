@@ -9,7 +9,8 @@ import java.awt.Color;
  */
 public final class Square {
     private String type;
-    private Color color;
+    private Color fillColor;
+    private Color outLineColor;
     private int coordX = 0;
     private int coordY = 0;
     
@@ -50,29 +51,39 @@ public final class Square {
         this.setColor(type);
     }
 
-    public Color getColor() {
-        return color;
+    public Color getFillColor() {
+        return fillColor;
+    }
+    
+    public Color getOutLineColor() {
+        return outLineColor;
     }
 
     public void setColor(String type) {
         switch(type){
             case "SNAKEHEAD":
-                this.color = new Color(0, 142, 142);
+                this.fillColor =    new Color(32, 96, 128);
+                this.outLineColor = new Color(255, 255, 255);                
                 break;
             case "SNAKEBODY":
-                this.color = new Color(22, 184, 78);
+                this.fillColor =    new Color(32, 128, 160);
+                this.outLineColor = new Color(255, 255, 255);                
                 break;
             case "WALL":
-                this.color = new Color(11, 22, 22);
+                this.fillColor =    new Color(11, 22, 22);
+                this.outLineColor = new Color(11, 22, 22);
                 break;
             case "default":
-                this.color = new Color(192, 192, 192);
+                this.fillColor =    new Color(192, 160, 0);
+                this.outLineColor = new Color(255, 255, 255);                
                 break;
             case "APPLE":
-                this.color = new Color(150, 0, 24);
+                this.fillColor =    new Color(160, 0, 32);
+                this.outLineColor = new Color(255, 255, 255);                
                 break;
             default:
-                this.color = new Color(192, 192, 192);
+                this.fillColor =    new Color(192, 192, 192);
+                this.outLineColor = new Color(255, 255, 255);                
                 break;
         } 
     }   

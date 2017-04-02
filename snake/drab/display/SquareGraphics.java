@@ -22,8 +22,12 @@ public class SquareGraphics extends JPanel{
         int width = 800 / this.sizeSquare;
         for (int i = 0 ; i < this.listBoard.size() ; i ++){
             for(int j = 0 ; j < this.listBoard.get(i).size() ; j ++){
-                g.setColor(this.listBoard.get(i).get(j).getColor());
+                g.setColor(this.listBoard.get(i).get(j).getFillColor());
                 g.fillRect(j * width, i * width, width, width);
+                g.setColor(this.listBoard.get(i).get(j).getOutLineColor());
+                System.out.println(this.listBoard.get(i).get(j).getFillColor());
+                System.out.println(this.listBoard.get(i).get(j).getOutLineColor());
+                g.drawRect(j * width, i * width, width, width);
             }
         }
     }   

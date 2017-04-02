@@ -21,7 +21,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     
     private final Square snakeHead = new Square("SNAKEHEAD", 2, 2);
     
-    private final int sizeSquare = 20;
+    private final int sizeSquare = 10;
     private final SquareGraphics  squareGraphics = new SquareGraphics(board, this.sizeSquare);
     private String direction = "RIGHT";
     private final boolean gameContinue = true;
@@ -44,7 +44,7 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
     public boolean getGameContinue(){
         return this.gameContinue;
     }
-    
+
     @Override
     public void keyTyped(KeyEvent e) {}
 
@@ -120,60 +120,65 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
         this.setContentPane(squareGraphics);
     }
     
-    public void runSnake() {
-        
-        System.out.println("number of body : " + this.numberOfBody);
+    public void addMovement(){
         
         this.listMoveForBody.add(this.direction);
         while(this.listMoveForBody.size() - 1  !=  this.numberOfBody){
             this.listMoveForBody.remove(0); 
         }   
-        
+        System.out.println("number of body : " + this.numberOfBody);
+    }
+    
+    public void runSnake() {
         String squareAfterMove;
         switch (this.direction) {
 
-        case "LEFT" :
-            //test if the snack is out of the board (left side)
-            squareAfterMove = this.board.get(this.snakeHead.getCoordY())
-                                        .get(this.snakeHead.getCoordX() - 1).getType();
-            if(this.getIfWall(squareAfterMove)){
-               break;
-            }
-            this.moveHead(this.getIfApple(squareAfterMove));
-            break;
-            
-        case "RIGHT":
-            //test if the snack is out of the board right side)      
-            squareAfterMove = this.board.get(this.snakeHead.getCoordY())
-                                        .get(this.snakeHead.getCoordX() + 1).getType();
-            if(this.getIfWall(squareAfterMove)){
-               break;
-            }
-            this.moveHead(this.getIfApple(squareAfterMove));
-            break;
-        
-        case "TOP":
-            //test if the snack is out of the board (top side)
-            squareAfterMove = this.board.get(this.snakeHead.getCoordY() - 1)
-                                        .get(this.snakeHead.getCoordX()).getType();
-            if(this.getIfWall(squareAfterMove)){
-               break;
-            }
-            this.moveHead(this.getIfApple(squareAfterMove));
-            break;
-            
-        case "BOTTOM":
-            //test if the snack is out of the board (bottom side)
-            squareAfterMove = this.board.get(this.snakeHead.getCoordY() + 1)
-                                        .get(this.snakeHead.getCoordX()).getType();
-            if(this.getIfWall(squareAfterMove)){
-               break;
-            }
-            this.moveHead(this.getIfApple(squareAfterMove));
-            break;
-            
-        default:
-            break;
+            case "LEFT" :
+                //test if the snack is out of the board (left side)
+                squareAfterMove = this.board.get(this.snakeHead.getCoordY())
+                                            .get(this.snakeHead.getCoordX() - 1).getType();
+                if(this.getIfSomethingWrong(squareAfterMove)){
+                    break;
+                }
+                this.addMovement();
+                this.moveHead(this.getIfApple(squareAfterMove));
+                break;
+
+            case "RIGHT":
+                //test if the snack is out of the board right side)      
+                squareAfterMove = this.board.get(this.snakeHead.getCoordY())
+                                            .get(this.snakeHead.getCoordX() + 1).getType();
+                if(this.getIfSomethingWrong(squareAfterMove)){
+                   break;
+                }
+                this.addMovement();
+                this.moveHead(this.getIfApple(squareAfterMove));
+                break;
+
+            case "TOP":
+                //test if the snack is out of the board (top side)
+                squareAfterMove = this.board.get(this.snakeHead.getCoordY() - 1)
+                                            .get(this.snakeHead.getCoordX()).getType();
+                if(this.getIfSomethingWrong(squareAfterMove)){
+                   break;
+                }
+                this.addMovement();            
+                this.moveHead(this.getIfApple(squareAfterMove));
+                break;
+
+            case "BOTTOM":
+                //test if the snack is out of the board (bottom side)
+                squareAfterMove = this.board.get(this.snakeHead.getCoordY() + 1)
+                                            .get(this.snakeHead.getCoordX()).getType();
+                if(this.getIfSomethingWrong(squareAfterMove)){
+                   break;
+                }
+                this.addMovement();            
+                this.moveHead(this.getIfApple(squareAfterMove));
+                break;
+
+            default:
+                break;
         } 
     }
 
@@ -186,9 +191,9 @@ public class DisplayGame extends javax.swing.JFrame implements KeyListener {
         return false;
     }
     
-    public boolean getIfWall(String squareAfter){
-        if(squareAfter.equals("WALL")){
-            System.out.println("out");
+    public boolean getIfSomethingWrong(String squareAfter){
+        if(squareAfter.equals("WALL") || squareAfter.equals("SNAKEBODY")){
+            System.out.println("game over");
             return true;
         } 
         return false;
